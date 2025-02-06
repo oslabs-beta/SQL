@@ -2,12 +2,13 @@
   "name": "sql",
   "private": true,
   "version": "0.0.0",
+  "main": "./src/App.tsx",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "client": "npm run dev",
     "build": "tsc -b && vite build",
-    "server": "tsx watch server/server.ts",
+    "server": "nodemon --watch server --ext ts --exec tsx server/server.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "concurrently \"npm run server\" \"npm run client\""
