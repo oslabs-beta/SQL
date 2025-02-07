@@ -54,10 +54,9 @@ const sdk = new NodeSDK({
 });
 
 // Start the SDK and log status
-sdk
-  .start()
-  .then(() => console.log('Tracing initialized'))
-  .catch((error) => console.log('Error initializing tracing', error));
+sdk.start();
+// cant use .then because start() does not return a promise
+console.log('Tracing initialized');
 
 // shutdown handler
 // ensures all pending traces are exported before app exits
