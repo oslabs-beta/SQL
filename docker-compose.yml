@@ -1,16 +1,91 @@
 version: '3.7'
 
+#ALL VOLUMES AND COMMANDS AND BUILDS WILL NEED TO BE UPDATED WITH ACCURATE
+#LOCATIONS. AND WILL ALSO NEED TO CREATE DOCKER FILES WHERE NEEDED
+#FOR EXAMPLE WE'LL NEED A DOCKER FILE IN THE SERVER FOLDER FOR THE BACKEND SERVICE
 services: # This section defines all the services (containers) we want to run
-  jaeger: # This is the name we're giving to our service
-    image: jaegertracing/all-in-one:latest
-    #ports section maps ports from container to computer
-    #format is host_port:container_port
+  # Supabase - Our main database and auth service
+  # Runs PostgreSQL and provides real-time capabilities
+  #format is host_port:container_port
+  supabase:
+    image: supabase/supabase-docker # Official Supabase Docker image
     ports:
-      - '6831:6831/udp' # Jaeger thrift compact protocol
-      - '6832:6832/udp' # Jaeger thrift binary protocol
-      - '5778:5778' # Jaeger admin port
-      - '16686:16686' # Jaeger UI
-      - '4317:4317' # OTLP gRPC
-      - '4318:4318' # OTLP HTTP
+      - '54322:5432' # PostgreSQL database port
+      - '54323:8000' # Supabase Studio - web interface for managing database
     environment:
-      - COLLECTOR_OTLP_ENABLED=true
+      #POSTGRES_PASSWORD: //a password goes here
+    volumes:
+      # Persist database data even when container restarts
+      - supabase_data:/var/lib/postgresql/data
+
+  # Express Backend - Handles our API and query monitoring
+  backend:
+    build: ./server # Builds using server folder's Dockerfile
+    ports:
+      - '5000:5000' # API will be available on localhost:5000
+    volumes:
+      # Hot reloading: Changes to code update without restart
+      - ./server:/app # Maps local code to container
+      - /app/node_modules # Keeps node_modules in container
+    environment:
+      - SUPABASE_URL=http://supabase:8000 # Internal Docker network URL
+      - NODE_ENV=development
+    depends_on:
+      - supabase # Ensures database starts first
+
+  # Prometheus - Collects and stores our metrics
+  prometheus:
+    image: prom/prometheus # Official Prometheus image
+    ports:
+      - '9090:9090' # Prometheus web interface
+    volumes:
+      # Configuration and data persistence
+      # - ./prometheus:/etc/prometheus # Local config files
+      # - prometheus_data:/prometheus # Stored metrics
+    command:
+      # - '--config.file=/etc/prometheus/prometheus.yml'
+
+  # Grafana - Creates dashboards from our metrics
+  grafana:
+    image: grafana/grafana # Official Grafana image
+    ports:
+      - '3001:3000' # Dashboard available on localhost:3001
+    volumes:
+      # Persist dashboard configurations and data
+      # - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus # Needs Prometheus to start first
+
+  # React Frontend - Our user interface
+  frontend:
+    build: ./frontend # Builds using frontend's Dockerfile
+    ports:
+      - '3000:3000' # Website available on localhost:3000
+    volumes:
+      # Hot reloading for development
+      # - ./frontend:/app # Maps local code to container
+      # - /app/node_modules # Keeps node_modules in container
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:5000 # Backend API URL
+    depends_on:
+      - backend # Ensures API is available first
+
+    jaeger: # This is the name we're giving to our service
+      image: jaegertracing/all-in-one:latest
+      #ports section maps ports from container to computer
+      #format is host_port:container_port
+      ports:
+        - '6831:6831/udp' # Jaeger thrift compact protocol
+        - '6832:6832/udp' # Jaeger thrift binary protocol
+        - '5778:5778' # Jaeger admin port
+        - '16686:16686' # Jaeger UI
+        - '4317:4317' # OTLP gRPC
+        - '4318:4318' # OTLP HTTP
+      environment:
+        - COLLECTOR_OTLP_ENABLED=true
+
+        # Persistent storage for our services
+volumes:
+  supabase_data: # Database storage
+  prometheus_data: # Metrics storage
+  grafana_data: # Dashboard configurations
