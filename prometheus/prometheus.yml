@@ -66,3 +66,33 @@ scrape_configs:
 
 
 # Every 15 seconds it evaluates these rules
+
+
+
+# To break down what metrics each job will  probably collect (we configure the 'what to collect' in other files):
+
+# Prometheus Self-Monitoring Metrics:
+
+# Copyprometheus_targets               # How many targets are being monitored
+# prometheus_notifications_sent    # Alert notifications
+# prometheus_scrape_duration      # How long scrapes take
+# prometheus_storage_samples      # How many data points stored
+
+# Express Backend Metrics (What you'll set up):
+
+# Copyhttp_request_duration_seconds   # How long requests take
+# http_requests_total            # Number of requests
+# query_execution_time_seconds   # How long SQL queries take
+# query_errors_total            # Number of failed queries
+# active_connections            # Current number of connections
+# memory_usage_bytes            # Server memory use
+
+# PostgreSQL/Supabase Metrics:
+
+# Copypg_stat_database_tup_fetched   # Rows fetched
+# pg_stat_database_tup_inserted  # Rows inserted
+# pg_stat_database_tup_updated   # Rows updated
+# pg_stat_database_tup_deleted   # Rows deleted
+# pg_stat_database_conflicts     # Query conflicts
+# pg_stat_activity_count        # Active connections
+# pg_stat_bgwriter_buffers      # Buffer usage
