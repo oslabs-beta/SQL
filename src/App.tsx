@@ -1,5 +1,11 @@
+import QueryMonitor from './components/QueryMonitor';
+
 function App() {
-  return <></>;
+  return (
+    <div>
+      <QueryMonitor />
+    </div>
+  );
 }
 
 export default App;
