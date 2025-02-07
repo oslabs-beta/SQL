@@ -55,6 +55,7 @@ const sdk = new NodeSDK({
 
 // Start the SDK and log status
 sdk.start();
+// cant use .then because start() does not return a promise
 console.log('Tracing initialized');
 
 // shutdown handler
