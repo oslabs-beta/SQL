@@ -3,6 +3,7 @@ version: '3.7'
 #ALL VOLUMES AND COMMANDS AND BUILDS WILL NEED TO BE UPDATED WITH ACCURATE
 #LOCATIONS. AND WILL ALSO NEED TO CREATE DOCKER FILES WHERE NEEDED
 #FOR EXAMPLE WE'LL NEED A DOCKER FILE IN THE SERVER FOLDER FOR THE BACKEND SERVICE
+#and will need to add opentelemetry
 services: # This section defines all the services (containers) we want to run
   # Supabase - Our main database and auth service
   # Runs PostgreSQL and provides real-time capabilities
@@ -33,6 +34,20 @@ services: # This section defines all the services (containers) we want to run
     depends_on:
       - supabase # Ensures database starts first
 
+   jaeger: # This is the name we're giving to our service
+      image: jaegertracing/all-in-one:latest
+      #ports section maps ports from container to computer
+      #format is host_port:container_port
+      ports:
+        - '6831:6831/udp' # Jaeger thrift compact protocol
+        - '6832:6832/udp' # Jaeger thrift binary protocol
+        - '5778:5778' # Jaeger admin port
+        - '16686:16686' # Jaeger UI
+        - '4317:4317' # OTLP gRPC
+        - '4318:4318' # OTLP HTTP
+      environment:
+        - COLLECTOR_OTLP_ENABLED=true
+
   # Prometheus - Collects and stores our metrics
   prometheus:
     image: prom/prometheus # Official Prometheus image
@@ -44,6 +59,21 @@ services: # This section defines all the services (containers) we want to run
       # - prometheus_data:/prometheus # Stored metrics
     command:
       # - '--config.file=/etc/prometheus/prometheus.yml'
+
+
+  otel-collector:
+    image: otel/opentelemetry-collector
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+    volumes:
+    #left side is file in my project folder and right is where it appears in the container
+      - ./otel-config.yml:/etc/otel/config.yml
+    command: ["--config=/etc/otel/config.yml"]
+    depends_on:
+      - jaeger
+      - prometheus
+
 
   # Grafana - Creates dashboards from our metrics
   grafana:
@@ -70,20 +100,7 @@ services: # This section defines all the services (containers) we want to run
     depends_on:
       - backend # Ensures API is available first
 
-    jaeger: # This is the name we're giving to our service
-      image: jaegertracing/all-in-one:latest
-      #ports section maps ports from container to computer
-      #format is host_port:container_port
-      ports:
-        - '6831:6831/udp' # Jaeger thrift compact protocol
-        - '6832:6832/udp' # Jaeger thrift binary protocol
-        - '5778:5778' # Jaeger admin port
-        - '16686:16686' # Jaeger UI
-        - '4317:4317' # OTLP gRPC
-        - '4318:4318' # OTLP HTTP
-      environment:
-        - COLLECTOR_OTLP_ENABLED=true
-
+ 
         # Persistent storage for our services
 volumes:
   supabase_data: # Database storage

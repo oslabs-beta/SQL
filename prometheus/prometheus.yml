@@ -1,0 +1,68 @@
+# Global config
+global:
+  scrape_interval: 15s     # How often Prometheus will scrape metrics
+  evaluation_interval: 15s # How often Prometheus will evaluate rules
+
+# For each job below:
+
+# job_name: Label for this monitoring task
+# static_configs: List of things to watch
+# targets: Where to look for metrics
+
+# Uses Docker service names
+# Includes the port where metrics are exposed
+
+
+# What Prometheus needs to monitor
+scrape_configs:
+  # Monitor Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Monitor our Express backend yo collect metrics about queries
+  - job_name: 'express'
+    static_configs:
+      - targets: ['backend:5000']   # Uses Docker service name
+
+  # Monitor PostgreSQL metrics to collect database performance metrics
+  - job_name: 'postgresql'
+    static_configs:
+      - targets: ['supabase:5432']  # Uses Docker service name
+
+  OpenTelemetry collector
+  - job_name: 'otel-collector'
+    static_configs:
+      - targets: ['otel-collector:8889']  # Port where collector exposes metrics
+
+
+#       #global config notes:
+#       Think of it like setting a timer:
+
+# scrape_interval:
+
+
+# Like a camera taking snapshots of your system
+# Every 15 seconds, Prometheus:
+
+# Checks all your services
+# Collects their metrics
+# Stores the numbers
+
+
+# If set to 30s, you'd have less detailed data
+# If set to 5s, you'd have more detailed data but use more storage
+
+
+# evaluation_interval:
+
+
+# How often Prometheus checks its rules
+# Rules might be like:
+
+# "Alert if query takes > 1 second"
+# "Alert if database is slow"
+# "Alert if errors are high"
+
+
+# Every 15 seconds it evaluates these rules
