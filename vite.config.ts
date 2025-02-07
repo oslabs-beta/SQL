@@ -9,5 +9,13 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:3000',
     },
+    // Add settings to help with debugging
+    host: true,
+    port: 5173,
+    strictPort: true,
+    open: true
   },
+  // Add logging
+  logLevel: 'info',
+  clearScreen: false
 });
