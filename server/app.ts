@@ -2,7 +2,7 @@ import express, { ErrorRequestHandler } from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import { ServerError } from '../types/types.ts';
-
+import userRoutes from './routes/userRoutes.ts';
 const app = express();
 
 app.use(
@@ -15,9 +15,11 @@ app.use(
 );
 app.use(express.json());
 
-app.use('/api', (req, res) => {
-  res.status(200).json({ message: 'API is working!' });
-});
+// app.use('/api', (req, res) => {
+//   res.status(200).json({ message: 'API is working!' });
+// });
+
+app.use('/api', userRoutes);
 
 const errorHandler: ErrorRequestHandler = (
   err: ServerError,

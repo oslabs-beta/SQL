@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { createUser, findUserByEmail } from '../models/userModel';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
+import 'dotenv/config';
+import { UserRecord } from '../../types/types.ts';
 
 interface UserController {
   registerUser: (req: Request, res: Response) => Promise<Response>;
@@ -10,33 +12,43 @@ interface UserController {
 }
 
 const userController: UserController = {
-  async registerUser(req: Request, res: Response): Promise<Response> {
-    const {
-      name,
-      email,
-      password,
-    }: { name: string; email: string; password: string } = req.body;
-    console.log('Registering user:', { name, email });
-
-    if (!name || !email || !password) {
-      return res
-        .status(400)
-        .json({ error: 'Name, email, and password are required' });
-    }
-
+  registerUser: async (req: Request, res: Response) => {
     try {
-      const existingUser = await findUserByEmail(email);
+      const {
+        username,
+        email,
+        password,
+        first_name,
+        last_name,
+      }: Omit<UserRecord, 'id' | 'created_at'> = await req.body;
+      console.log('Registering user:', { username, email });
+
+      if (!username || !email || !password || !first_name || !last_name) {
+        return res.status(400).json({
+          error:
+            'Username, email, password, first name, and last name are required',
+        });
+      }
+
+      const existingUser: UserRecord | null = await findUserByEmail(email);
 
       if (existingUser) {
         return res.status(400).json({ error: 'Email is already registered' });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const user = await createUser(name, email, hashedPassword);
+
+      const user: UserRecord = await createUser({
+        username,
+        email,
+        password: hashedPassword,
+        first_name,
+        last_name,
+      });
 
       //create the token
       const token = jwt.sign(
-        { userId: user._id },
+        { userId: user.id },
         process.env.JWT_SECRET as string,
         {
           expiresIn: '1h',
@@ -54,9 +66,11 @@ const userController: UserController = {
       return res.status(201).json({
         message: 'User registered successfully',
         user: {
-          _id: user._id,
-          name: user.name,
+          id: user.id,
+          username: user.username,
           email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
         },
       });
     } catch (error) {
@@ -87,10 +101,10 @@ const userController: UserController = {
       }
 
       const token = jwt.sign(
-        { userId: user._id },
+        { userId: user.id },
         process.env.JWT_SECRET as string,
         {
-          expiresIn: '1hr',
+          expiresIn: '1h',
         }
       );
 
@@ -105,9 +119,11 @@ const userController: UserController = {
       return res.status(200).json({
         message: 'Login successful',
         user: {
-          _id: user._id,
-          name: user.name,
+          id: user.id,
+          username: user.username,
           email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
         },
       });
     } catch (error) {
