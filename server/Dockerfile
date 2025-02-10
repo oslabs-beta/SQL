@@ -6,7 +6,7 @@ FROM node:18.19-slim AS builder
 WORKDIR /app
 
 #copies package.json to working directory app
-COPY package.json ./
+COPY ../package*.json ./
 # COPY ../tsconfig.json ./
 
 #install dependencies in container
