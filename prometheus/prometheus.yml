@@ -20,16 +20,17 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  # Monitor our Express backend yo collect metrics about queries
+  # Monitor our Express backend to collect metrics about queries
   - job_name: 'express'
     static_configs:
-      - targets: ['backend:5000']   # Uses Docker service name
+      - targets: ['backend:4001']   # Uses Docker service name. Could be either 4001. if that doesnt work switch to 4002
 
   # Monitor PostgreSQL metrics to collect database performance metrics
   - job_name: 'postgresql'
     static_configs:
       - targets: ['supabase:5432']  # Uses Docker service name
 
+  # have to change jaeger
   OpenTelemetry collector
   - job_name: 'otel-collector'
     static_configs:

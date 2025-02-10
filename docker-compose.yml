@@ -23,7 +23,7 @@ services: # This section defines all the services (containers) we want to run
   backend:
     build: ./server # Builds using server folder's Dockerfile
     ports:
-      - '5000:5000' # API will be available on localhost:5000
+      - '4002:4001' # API will be available on localhost:4002
     volumes:
       # Hot reloading: Changes to code update without restart
       - ./server:/app # Maps local code to container
