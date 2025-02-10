@@ -10,6 +10,7 @@ import {
 import logo from '../assets/logo_queryhawk.jpg';
 import { QueryMetrics } from './types';
 import { MetricBar } from './MetricBar';
+import TraceViewer from './TraceViewer';
 
 //hardcoded
 const QueryMonitor: React.FC = () => {
@@ -144,6 +145,11 @@ const QueryMonitor: React.FC = () => {
                 </Box>
               </CardContent>
             </Card>
+          </Grid>
+
+          {/* Add TraceViewer */}
+          <Grid item xs={12}>
+            <TraceViewer />
           </Grid>
         </Grid>
       </Container>

@@ -2,9 +2,12 @@ import express, { ErrorRequestHandler } from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import { ServerError } from '../types/types.ts';
+import apiRouter from './routes/api';
+import testTracesRouter from './routes/test-traces';
 
 const app = express();
 
+//middleware
 app.use(
   cors({
     origin: 'http://localhost:5173', // Your frontend's URL
@@ -15,10 +18,14 @@ app.use(
 );
 app.use(express.json());
 
-app.use('/api', (req, res) => {
+//routes
+app.use('/debug', testTracesRouter);
+//api routes
+apiRouter.get('/', (req, res) => {
   res.status(200).json({ message: 'API is working!' });
 });
-
+app.use('/api', apiRouter);
+//error handler
 const errorHandler: ErrorRequestHandler = (
   err: ServerError,
   _req,
@@ -36,5 +43,4 @@ const errorHandler: ErrorRequestHandler = (
 };
 
 app.use(errorHandler);
-
 export default app;

@@ -1,20 +1,42 @@
 // Import core OpenTelemetry packages
 import { NodeSDK } from '@opentelemetry/sdk-node'; // Main SDK for Node.js applications
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'; // Automatic instrumentation for Node.js libraries
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'; // Exports traces to your collector (Jaeger in our case)
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'; // Exports traces to Jaeger
 import { Resource } from '@opentelemetry/resources'; // Adds context/metadata to your traces
-import {
-  ATTR_SERVICE_NAME,
-  ATTR_SERVICE_VERSION,
-} from '@opentelemetry/semantic-conventions'; // Standard naming for resource attributes
-import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'; // Processes and exports spans as they are ended
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'; // Standard naming for resource attributes
+import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'; // For processing spans
+import { trace, SpanStatusCode } from '@opentelemetry/api';
 
-// Initialize the OpenTelemetry SDK
+console.log('Initializing tracing...');
+
+// Create a custom span for tracking operations
+export const createCustomSpan = (name: string, fn: () => Promise<any>) => {
+  const tracer = trace.getTracer('custom-tracer');
+  
+  return tracer.startActiveSpan(name, async (span) => {
+    try {
+      const result = await fn();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error) {
+      span.setStatus({
+        code: SpanStatusCode.ERROR,
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+};
+
+
+// Initialize the OpenTelemetry SDK 
 const sdk = new NodeSDK({
   // Resource: Identifies your application in the traces
   resource: new Resource({
     // SERVICE_NAME: How your app will appear in Jaeger UI
-    [ATTR_SERVICE_NAME]: 'sql-optimizer',
+    [ATTR_SERVICE_NAME]: 'queryhawk',
     // SERVICE_VERSION: Helps track which version generated the traces
     [ATTR_SERVICE_VERSION]: '1.0.0',
     // Custom attribute to distinguish development from production
@@ -24,7 +46,7 @@ const sdk = new NodeSDK({
   // Trace Exporter: Configures where to send the traces
   // In this case, sending to Jaeger's OTLP HTTP endpoint
   traceExporter: new OTLPTraceExporter({
-    url: 'http://localhost:4318/v1/traces', // Jaeger's default OTLP endpoint
+    url: 'http://localhost:4318/v1/traces', // Jaeger's default, where traces are sent
   }),
 
   // Span Processor: Handles each span (trace segment) as it's completed
@@ -56,7 +78,7 @@ const sdk = new NodeSDK({
 // Start the SDK and log status
 sdk.start();
 // cant use .then because start() does not return a promise
-console.log('Tracing initialized');
+console.log('✅ Tracing initialized');
 
 // shutdown handler
 // ensures all pending traces are exported before app exits
