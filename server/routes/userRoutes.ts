@@ -4,8 +4,8 @@ import userController from '../controllers/userController';
 const router = express.Router();
 
 //this endpoint might be '/signup'
-router.post('/register', (req, res) => {
-  userController.registerUser(req, res);
+router.post('/register', async (req, res) => {
+  await userController.registerUser(req, res);
 });
 // router.post('/register', userController);
 

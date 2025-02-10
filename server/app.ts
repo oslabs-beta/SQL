@@ -10,7 +10,7 @@ app.use(
     origin: 'http://localhost:5173', // Your frontend's URL
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     allowedHeaders: ['Content-Type'],
-    // credentials: true, // Allow cookies and credentials
+    credentials: true, // Enable this for cookies
   })
 );
 app.use(express.json());
