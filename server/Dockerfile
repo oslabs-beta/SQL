@@ -1,5 +1,5 @@
 # Build stage for image
-FROM node:18.19-slim AS builder
+FROM node:22 AS builder
 
 #creates directory called app in container
 #for subsequent instructions in this file it'll run those in the container
