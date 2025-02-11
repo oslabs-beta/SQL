@@ -57,7 +57,7 @@ services: # This section defines all the services (containers) we want to run
       - '6832:6832/udp' # Jaeger thrift binary protocol
       - '5778:5778' # Jaeger admin port
       - '16686:16686' # Jaeger UI
-      - '4316:4316' # OTLP gRPC
+      - '4317:4317' # OTLP gRPC
       - '4318:4318' # OTLP HTTP
     environment:
       - COLLECTOR_OTLP_ENABLED=true
@@ -77,7 +77,7 @@ services: # This section defines all the services (containers) we want to run
   otel-collector:
     image: otel/opentelemetry-collector
     ports:
-      - '4317:4317' # OTLP gRPC receiver
+      - '4316:4316' # OTLP gRPC receiver
       - '4139:4319' # OTLP HTTP receiver
     volumes:
       #left side is file in my project folder and right is where it appears in the container
