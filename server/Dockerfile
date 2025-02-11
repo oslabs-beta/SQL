@@ -15,8 +15,9 @@ RUN npm install
 #  . . copies all files from ./server into /app container
 COPY . .
 
-#express app runs on port 5000 in container
-EXPOSE 5000
+#express app runs on port 5000 in container 
+# EXPOSE command is used to declare which port the container will listen to internally.
+EXPOSE 4001
 
 #execute! uses server script from json file
 CMD ["npm", "run", "server"]
@@ -37,3 +38,4 @@ CMD ["npm", "run", "server"]
 # This means our code will be located in a different location then server. 
 # It will most likely be located in ./dist 
 # We need to change our tsconfig.json outDir to "./dist" (When project is ready for production).
+# docker build -t my-server -f server/Dockerfile .

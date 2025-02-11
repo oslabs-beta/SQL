@@ -7,15 +7,15 @@ export default defineConfig({
   // Remove comment once we connect our frontend to our backend
   server: {
     proxy: {
-      '/api': 'http://localhost:3000',
+      '/api': 'http://localhost:4001',
     },
     // Add settings to help with debugging
     host: true,
     port: 5173,
     strictPort: true,
-    open: true
+    open: true,
   },
   // Add logging
   logLevel: 'info',
-  clearScreen: false
+  clearScreen: false,
 });
