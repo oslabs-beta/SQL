@@ -6,14 +6,17 @@ FROM node:18.19-slim AS builder
 WORKDIR /app
 
 #copies package.json to working directory app
-COPY package.json ./
-# COPY ../tsconfig.json ./
+#this path is correct due to the context line for backend in compose file
+#that context lines logically brings us to root level for writing paths here
+COPY package*.json ./
+COPY tsconfig.json ./
 
 #install dependencies in container
 RUN npm install
 
 #  . . copies all files from ./server into /app container
-COPY . .
+COPY server/ ./server/
+COPY types/ ./types/
 
 #express app runs on port 5000 in container 
 # EXPOSE command is used to declare which port the container will listen to internally.
@@ -21,6 +24,7 @@ EXPOSE 4001
 
 #execute! uses server script from json file
 CMD ["npm", "run", "server"]
+
 
 
 # Container port shold match the app port ideally.
