@@ -16,8 +16,10 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^5.15.7",
-    "@mui/material": "^5.15.7",
+
+    "@mui/icons-material": "^5.16.14",
+    "@mui/material": "^5.16.14",
+
     "@opentelemetry/auto-instrumentations-node": "^0.56.0",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.57.1",
     "@opentelemetry/exporter-trace-otlp-http": "^0.57.1",

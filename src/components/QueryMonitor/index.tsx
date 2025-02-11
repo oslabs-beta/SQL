@@ -10,6 +10,7 @@ import {
 import logo from '../assets/logo_queryhawk.jpg';
 import { QueryMetrics } from './types';
 import { MetricBar } from './MetricBar';
+import GrafanaDashboard from './GrafanaDashboard';
 
 //hardcoded
 const QueryMonitor: React.FC = () => {
@@ -70,6 +71,18 @@ const QueryMonitor: React.FC = () => {
 
         {/* Metrics Grid */}
         <Grid container spacing={3}>
+          {/* Grafana Dashboard */}
+          <Grid item xs={12}>
+          <GrafanaDashboard
+            dashboardUrl="http://localhost:3000/d-solo/cecof0k4pphxcf/new-dashboard"
+            orgId="1"
+            panelId="1"
+            theme="dark"
+            height="500px"
+            refreshInterval={300}
+            authToken={import.meta.env.VITE_GRAFANA_TOKEN}
+          />
+          </Grid>
           {/* Key Metrics */}
           <Grid item xs={12} md={6}>
             <Card>
