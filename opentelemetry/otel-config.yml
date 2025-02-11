@@ -15,7 +15,7 @@ receivers:
         #   cert_file: cert.pem
         #   key_file: cert-key.pem
       http: # For applications using HTTP
-        endpoint: 0.0.0.0:4318 # Port where it listens
+        endpoint: 0.0.0.0:4319 # Port where it listens
 
 # Processors: What to do with the data before sending
 processors:
@@ -25,8 +25,8 @@ processors:
 
 # Exporters: Where to send the processed data
 exporters:
-  jaeger: # Sends traces to Jaeger
-    endpoint: jaeger:14250 # Docker service name & port
+  otlp: # Sends traces to opentel - jaeger
+    endpoint: jaeger:4316 # Docker service name & port
     tls:
       insecure: true # Dev setup - don't need security
 
@@ -42,7 +42,7 @@ service:
     traces: # Pipeline for trace data
       receivers: [otlp] # Get data from receivers
       processors: [batch] # Process it
-      exporters: [jaeger] # Send to Jaeger
+      exporters: [otlp] # Send to Jaeger
 
     metrics: # Pipeline for metrics
       receivers: [otlp] # Get data from receivers
