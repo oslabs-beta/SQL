@@ -38,3 +38,21 @@ To find out name of container user docker ps.
 Optional remove container after stopping it:
 docker rm <container_name> or docker rm <container_id>
 To find out name of container user docker ps.
+
+Stop:
+docker stop $(docker ps -aq)
+
+Remove all containers:
+docker rm $(docker ps -aq)
+
+Remove all images:
+docker rmi $(docker images -q)
+
+remove all volumes:
+docker volume rm $(docker volume ls -q)
+
+remove all network volumes:
+docker network prune
+
+Remove all dangling resources:
+docker system prune -a
