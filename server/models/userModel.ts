@@ -29,32 +29,63 @@ export const createUser = async (user: {
   try {
     const { username, email, password, first_name, last_name } = user;
 
-    const userInsertQuery = `
-      INSERT INTO auth.users (email)
-      VALUES ($1)
+    await client.query('BEGIN');
+
+    // First, create the auth user - notice we're using auth schema
+    const authUserInsertQuery = `
+      INSERT INTO auth.users (
+        id,  -- This needs to be a UUID
+        email
+      )
+      VALUES (
+        gen_random_uuid(),  -- Generate a UUID for the user
+        $1
+      )
       RETURNING id;
     `;
+    // Let's add some debugging to see what's happening
+    console.log('Executing user insert with email:', email);
+    const authUserResult = await client.query(authUserInsertQuery, [email]);
+    //const userResult = await client.query(userInsertQuery, [id, email]);
+    console.log('User insert result:', authUserResult.rows[0]);
 
-    const userResult = await client.query(userInsertQuery, [email, password]);
-    const userId = userResult.rows[0].id;
+    if (!authUserResult.rows[0]?.uuid) {
+      throw new Error('Failed to generate user ID');
+    }
+
+    //const userResult = await client.query(userInsertQuery, [id, email]);
+    const userId = authUserResult.rows[0].id;
 
     const profileInsertQuery = `
-      INSERT INTO user_account (user_id, username, email, first_name, last_name)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING id, username, email, first_name, last_name, created_at;
-    `;
-    const profileResult = await client.query(profileInsertQuery, [
-      userId,
+      INSERT INTO public.user_account (
       username,
       email,
+      password,
       first_name,
       last_name,
+      user_id  -- This links to the auth.users table
+      )
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id, username, email, first_name, last_name, created_at;
+    `;
+    const userProfileResult = await client.query(profileInsertQuery, [
+      username,
+      email,
+      password,  // Remember to hash this before storing
+      first_name,
+      last_name,
+      userId     // This is the UUID from auth.users
     ]);
-    console.log('Profile created:', profileResult.rows[0]);
-    return profileResult.rows[0];
+
+    await client.query('COMMIT');
+    
+    console.log('Profile created:', userProfileResult.rows[0]);
+    return userProfileResult.rows[0];
   } catch (error) {
     console.error('Error creating user:', error);
     throw error;
+  } finally {
+    client.release();
   }
 };
 
