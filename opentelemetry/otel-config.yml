@@ -9,7 +9,7 @@ receivers:
   otlp: # OpenTelemetry protocol
     protocols:
       grpc: # For applications using gRPC
-        endpoint: 0.0.0.0:4317 # Port where it listens
+        endpoint: 0.0.0.0:4316 # Port where it listens
         #i commented out tls, it's a security encryption feature i dunno if we need?
         # tls:
         #   cert_file: cert.pem
@@ -26,7 +26,7 @@ processors:
 # Exporters: Where to send the processed data
 exporters:
   otlp: # Sends traces to opentel - jaeger
-    endpoint: jaeger:4316 # Docker service name & port
+    endpoint: jaeger:4317 # Docker service name & port
     tls:
       insecure: true # Dev setup - don't need security
 
