@@ -36,10 +36,12 @@ services: # This section defines all the services (containers) we want to run
     ports:
       - '4002:4001' # API will be available on localhost:4002
     volumes:
-      # Hot reloading: Changes to code update without restart
-      - ./server:/app # Maps local code to container
-      - .:/app/root # Mount the root directory to /app/root (where package.json is)
-      - /app/node_modules # Keeps node_modules in container
+      # All these volume mappings enable development with hot reloading
+      - ./server:/app/server # Maps local server code to container
+      - ./types:/app/types # Maps local types directory for TypeScript types
+      - ./package.json:/app/package.json # Maps package.json for npm commands
+      - ./tsconfig.json:/app/tsconfig.json # Maps TypeScript config
+      - /app/node_modules # Preserves container's node_modules
     environment:
       - SUPABASE_URL=http://supabase:8000 # Internal Docker network URL
       - NODE_ENV=development
@@ -79,7 +81,7 @@ services: # This section defines all the services (containers) we want to run
       - '4139:4319' # OTLP HTTP receiver
     volumes:
       #left side is file in my project folder and right is where it appears in the container
-      - ./otel-config.yml:/etc/otel/config.yml
+      - ./opentelemetry/otel-config.yml:/etc/otel/config.yml
     command: ['--config=/etc/otel/config.yml']
     depends_on:
       - jaeger

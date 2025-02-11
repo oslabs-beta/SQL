@@ -24,11 +24,11 @@ scrape_configs:
     static_configs:
       - targets: ['backend:4001'] # Uses Docker service name. Could be either 4001. if that doesnt work switch to 4002
 
-# Configure Prometheus to scrape metrics from PostgreSQL
-# The postgres_exporter translates database-specific metrics 
-# into a format Prometheus can understand and visualize
-# We are scrape_config 2 times might need to remove this one.
-scrape_configs:
+  # Configure Prometheus to scrape metrics from PostgreSQL
+  # The postgres_exporter translates database-specific metrics
+  # into a format Prometheus can understand and visualize
+  # We are scrape_config 2 times might need to remove this one.
+
   - job_name: 'postgresql'
     static_configs:
       - targets: ['postgres_exporter:9187']
