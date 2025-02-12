@@ -1,4 +1,4 @@
-import express, { ErrorRequestHandler } from 'express';
+import express, { ErrorRequestHandler, Request, Response } from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import { ServerError } from '../types/types.ts';
@@ -17,6 +17,10 @@ app.use(
 app.use(express.json());
 
 app.use('/api', apiRoutes);
+
+app.use('*', (req: Request, res: Response) => {
+  res.status(404).send('Endpoint does not exist.');
+});
 
 const errorHandler: ErrorRequestHandler = (
   err: ServerError,

@@ -27,38 +27,64 @@ const userDatabaseController: userDatabaseController = {
       });
 
       // const result = await pool.query(`EXPLAIN ANALYZE ${query}`);
-
+      // formatted
       const result = await pool.query(
-        `EXPLAIN (ANALYZE true, COSTS true, SETTINGS true) ${query}`
+        'EXPLAIN (ANALYZE true, COSTS true, SETTINGS true, BUFFERS true, WAL true, SUMMARY true, FORMAT JSON)' +
+          `${query}`
       );
 
-      // not formatted
       // const result = await pool.query(
-      //   'EXPLAIN (ANALYZE true, COSTS true, SETTINGS true, BUFFERS true, WAL true, SUMMARY true)' +
-      //     `${query}`
+      //   `EXPLAIN (ANALYZE true, SETTINGS true, FORMAT JSON) ${query}`
       // );
 
-      // formatted
-      // const result = await pool.query(
-      //   'EXPLAIN (ANALYZE true, COSTS true, SETTINGS true, BUFFERS true, WAL true, SUMMARY true, FORMAT JSON)' +
-      //     `${query}`
+      // used to see full result of JSON
+      console.log(
+        'EXPLAIN ANALYZE Result:',
+        JSON.stringify(result.rows, null, 2)
+      );
+
+      const queryPlan = result.rows[0]['QUERY PLAN'][0];
+
+      if (!queryPlan) {
+        res.status(500).json({ message: 'Could not retrieve plan data' });
+        return;
+      }
+
+      // // Log the full result for inspection (debugging purposes)
+      // console.log(
+      //   'Settings Field:',
+      //   JSON.stringify(queryPlan['Settings'], null, 2)
       // );
 
-      // const explainResults = result.rows[0].explain;
-      // const explainResults = result.rows.map((row) => row['QUERY PLAN']);
-      const explainResults = result.rows;
-      res.locals.queryMetrics = explainResults;
+      // debugging
+      // console.log('Query Plan:', JSON.stringify(queryPlan, null, 2));
 
-      // logging explainResults testing
-      console.log('Query Metrics:', explainResults);
+      const sharedHitBlocks = queryPlan['Planning']?.['Shared Hit Blocks'] || 0;
+      const sharedReadBlocks =
+        queryPlan['Planning']?.['Shared Read Blocks'] || 0;
+      const cacheHitRatio =
+        sharedHitBlocks + sharedReadBlocks > 0
+          ? (sharedHitBlocks / (sharedHitBlocks + sharedReadBlocks)) * 100
+          : 0;
 
+      const metrics = {
+        executionTime: queryPlan['Execution Time'], // This is the execution time in milliseconds
+        planningTime: queryPlan['Planning Time'], // This is the planning time in milliseconds
+        rowsReturned: queryPlan['Plan']?.['Actual Rows'], // Rows actually returned
+        // actualTotalTime: queryPlan['Plan']?.['Actual Total Time'], // Time to actually execute
+        memoryUsage: queryPlan['Settings']?.['work_mem'],
+        cacheHitRatio: cacheHitRatio,
+      };
+
+      console.log('Query Metrics:', metrics);
+      res.locals.queryMetrics = metrics;
       return next();
     } catch (err) {
       console.error('Error running query', err);
       return next({
         log: 'Error in connectDB middleware',
         status: 500,
-        message: { err: 'Failed to get query metrics from db' },
+        message: { err: 'Failed to get query metrics from database.' },
       });
     }
   },
