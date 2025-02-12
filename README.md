@@ -37,6 +37,9 @@ docker stop <container_name> or docker stop <container_id>
 Optional remove container after stopping it:
 docker rm <container_name> or docker rm <container_id>
 
+Rebuilds container:
+docker-compose build (name)
+
 Use all container from docker-compose.yml:
 docker-compose up
 
