@@ -92,6 +92,11 @@ services: # This section defines all the services (containers) we want to run
     image: grafana/grafana # Official Grafana image
     ports:
       - '3001:3000' # Dashboard available on localhost:3001
+    environment:
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_SECURITY_CORS_ENABLED=true
+      - GF_SECURITY_CORS_ALLOW_ORIGIN=http://localhost:5173
     volumes:
       # Persist dashboard configurations and data
       - grafana_data:/var/lib/grafana
