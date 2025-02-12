@@ -33,10 +33,6 @@ const userDatabaseController: userDatabaseController = {
           `${query}`
       );
 
-      // const result = await pool.query(
-      //   `EXPLAIN (ANALYZE true, SETTINGS true, FORMAT JSON) ${query}`
-      // );
-
       // used to see full result of JSON
       console.log(
         'EXPLAIN ANALYZE Result:',
@@ -72,7 +68,7 @@ const userDatabaseController: userDatabaseController = {
         planningTime: queryPlan['Planning Time'], // This is the planning time in milliseconds
         rowsReturned: queryPlan['Plan']?.['Actual Rows'], // Rows actually returned
         // actualTotalTime: queryPlan['Plan']?.['Actual Total Time'], // Time to actually execute
-        memoryUsage: queryPlan['Settings']?.['work_mem'],
+        workMem: queryPlan['Settings']?.['work_mem'],
         cacheHitRatio: cacheHitRatio,
       };
 

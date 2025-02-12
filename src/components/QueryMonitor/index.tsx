@@ -97,7 +97,7 @@ const QueryMonitor: React.FC = () => {
           </Button>
         </Box>
 
-        {/* Query Input */}
+        {/* Query Input
         <Paper sx={{ mb: 4, p: 0.5 }}>
           <TextField
             fullWidth
@@ -113,7 +113,7 @@ const QueryMonitor: React.FC = () => {
               ),
             }}
           />
-        </Paper>
+        </Paper> */}
 
         {/* Metrics Grid */}
         <Grid container spacing={3}>
