@@ -1,4 +1,4 @@
-FROM node:18.19-slim
+FROM node:22 AS builder
 
 WORKDIR /app
 
@@ -10,6 +10,6 @@ RUN npm install
 # Copy source code into src directory
 COPY src/ ./src/
 
-EXPOSE 3000
+EXPOSE 5173
 
 CMD ["npm", "run", "dev"]
