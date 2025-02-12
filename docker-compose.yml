@@ -99,18 +99,20 @@ services: # This section defines all the services (containers) we want to run
       - prometheus # Needs Prometheus to start first
 
   # React Frontend - Our user interface
-  # frontend:
-  #   build: ./frontend # Builds using frontend's Dockerfile
-  #   ports:
-  #     - '3000:3000' # Website available on localhost:3000
-  #   volumes:
-  #     # Hot reloading for development
-  #     - ./frontend:/app # Maps local code to container
-  #     - /app/node_modules # Keeps node_modules in container
-  #   environment:
-  #     - REACT_APP_BACKEND_URL=http://localhost:5173 # Backend API URL
-  #   depends_on:
-  #     - backend # Ensures API is available first
+  frontend:
+    build:
+    context: . # This should be where your frontend Dockerfile is
+    dockerfile: src/Dockerfile # Path to your development Dockerfile
+    ports:
+      - '3000:3000' # Website available on localhost:3000
+    volumes:
+      # Hot reloading for development
+      - ./src:/app/src # Maps local code to container
+      - /app/node_modules # Keeps node_modules in container
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:5173 # Backend API URL
+    depends_on:
+      - backend # Ensures API is available first
 
   # Persistent storage for our services
 volumes:
