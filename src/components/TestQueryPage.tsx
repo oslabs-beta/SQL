@@ -29,7 +29,8 @@ const TestQueryPage: React.FC = () => {
     setQueryMetrics(null);
 
     try {
-      const response = await fetch('http://localhost:4001/api/query-metrics', {
+      // when we fetch have to fetch our back end in the container. (4002)
+      const response = await fetch('http://localhost:4002/api/query-metrics', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
