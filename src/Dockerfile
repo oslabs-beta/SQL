@@ -4,12 +4,14 @@ WORKDIR /app
 
 # Copy package files from project root
 COPY package*.json ./
+COPY vite.config.ts ./  
+COPY tsconfig.json ./   
 
 RUN npm install
 
 # Copy source code into src directory
-COPY src/ ./src/
+COPY . .
 
 EXPOSE 5173
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev", "--", "--host"]

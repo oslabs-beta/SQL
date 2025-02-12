@@ -1,4 +1,4 @@
-# version: '3.7'
+version: '3.7'
 
 #ALL VOLUMES AND COMMANDS AND BUILDS WILL NEED TO BE UPDATED WITH ACCURATE
 #LOCATIONS. AND WILL ALSO NEED TO CREATE DOCKER FILES WHERE NEEDED
@@ -34,7 +34,7 @@ services: # This section defines all the services (containers) we want to run
       context: .
       dockerfile: server/Dockerfile # Builds using server folder's Dockerfile
     ports:
-      - '4002:4001' # API will be available on localhost:4002
+      - '4002:4002' # API will be available on localhost:4002
     volumes:
       # All these volume mappings enable development with hot reloading
       - ./server:/app/server # Maps local server code to container
@@ -72,13 +72,13 @@ services: # This section defines all the services (containers) we want to run
       - ./prometheus:/etc/prometheus # Local config files
       - prometheus_data:/prometheus # Stored metrics
     command:
-      # - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--config.file=/etc/prometheus/prometheus.yml'
 
   otel-collector:
     image: otel/opentelemetry-collector
     ports:
       - '4316:4316' # OTLP gRPC receiver
-      - '4139:4319' # OTLP HTTP receiver
+      - '4319:4319' # OTLP HTTP receiver
     volumes:
       #left side is file in my project folder and right is where it appears in the container
       - ./opentelemetry/otel-config.yml:/etc/otel/config.yml
@@ -101,16 +101,16 @@ services: # This section defines all the services (containers) we want to run
   # React Frontend - Our user interface
   frontend:
     build:
-    context: . # This should be where your frontend Dockerfile is
-    dockerfile: src/Dockerfile # Path to your development Dockerfile
+      context: . # This should be where your frontend Dockerfile is
+      dockerfile: src/Dockerfile # Path to your development Dockerfile
     ports:
-      - '3000:3000' # Website available on localhost:3000
+      - '5173:5173' # Website available on localhost:3000
     volumes:
       # Hot reloading for development
-      - ./src:/app/src # Maps local code to container
+      - ./:/app/ # Maps local code to container
       - /app/node_modules # Keeps node_modules in container
     environment:
-      - REACT_APP_BACKEND_URL=http://localhost:5173 # Backend API URL
+      - REACT_APP_BACKEND_URL=http://localhost:4002 # Backend API URL
     depends_on:
       - backend # Ensures API is available first
 
