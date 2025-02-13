@@ -64,12 +64,18 @@ const userDatabaseController: userDatabaseController = {
           : 0;
 
       const metrics = {
+        // nodeType: queryPlan['Plan']?.['Node Type'],
         executionTime: queryPlan['Execution Time'], // This is the execution time in milliseconds
         planningTime: queryPlan['Planning Time'], // This is the planning time in milliseconds
         rowsReturned: queryPlan['Plan']?.['Actual Rows'], // Rows actually returned
+        actualLoops: queryPlan['Plan']?.['Actual Loops'], // # of loops in the plan
         // actualTotalTime: queryPlan['Plan']?.['Actual Total Time'], // Time to actually execute
+        sharedHitBlocks: queryPlan['Planning']?.['Shared Hit Blocks'],
+        sharedReadBlocks: queryPlan['Planning']?.['Shared Read Blocks'],
         workMem: queryPlan['Settings']?.['work_mem'],
         cacheHitRatio: cacheHitRatio,
+        startupCost: queryPlan['Plan']?.['Startup Cost'],
+        totalCost: queryPlan['Plan']?.['Total Cost'],
       };
 
       console.log('Query Metrics:', metrics);
