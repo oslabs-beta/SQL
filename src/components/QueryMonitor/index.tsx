@@ -117,20 +117,37 @@ const QueryMonitor: React.FC = () => {
 
         {/* Metrics Grid */}
         <Grid container spacing={3}>
-          {/* Grafana Dashboard */}
-          <Grid item xs={12}>
-            <GrafanaDashboard
-              dashboardUrl='http://localhost:3000/d-solo/cecof0k4pphxcf/new-dashboard'
-              orgId='1'
-              panelId='1'
-              theme='dark'
-              height='500px'
-              refreshInterval={300}
-              authToken={import.meta.env.VITE_GRAFANA_TOKEN}
-            />
-          </Grid>
+        <Grid container spacing={3}>
+        {/* CPU Usage Dashboard Panel */}
+        <Grid item xs={12} md={6}>  {/* Changed from xs={12} to xs={12} md={6} */}
+          <GrafanaDashboard
+            dashboardUrl="http://localhost:3001/d-solo/000000039/postgresql-database"
+            orgId="1"
+            panelId="22"
+            theme="dark"
+            height="300px"
+            refreshInterval={10}
+            authToken={import.meta.env.VITE_GRAFANA_TOKEN}
+            title="PostgreSQL CPU Usage"
+          />
+        </Grid>
+
+        {/* Memory Usage Dashboard Panel */}
+        <Grid item xs={12} md={6}>  {/* Changed from xs={12} to xs={12} md={6} */}
+          <GrafanaDashboard
+            dashboardUrl="http://localhost:3001/d-solo/000000039/postgresql-database"
+            orgId="1"
+            panelId="24"
+            theme="dark"
+            height="300px"
+            refreshInterval={10}
+            authToken={import.meta.env.VITE_GRAFANA_TOKEN}
+            title="PostgreSQL Memory Usage"
+          />
+        </Grid>
+      </Grid>
           {/* Key Metrics */}
-          <Grid item xs={12} md={6}>
+          {/* <Grid item xs={12} md={6}>
             <Card>
               <CardHeader
                 title={<Typography variant='h6'>Key Metrics</Typography>}
@@ -164,10 +181,10 @@ const QueryMonitor: React.FC = () => {
                 />
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
 
           {/* Query Performance */}
-          <Grid item xs={12} md={6}>
+          {/* <Grid item xs={12} md={6}>
             <Card>
               <CardHeader
                 title={<Typography variant='h6'>Query Performance</Typography>}
@@ -186,10 +203,10 @@ const QueryMonitor: React.FC = () => {
                 </Box>
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
 
           {/* Alerts */}
-          <Grid item xs={12} md={6}>
+          {/* <Grid item xs={12} md={6}>
             <Card>
               <CardHeader
                 title={<Typography variant='h6'>Critical Alerts</Typography>}
@@ -204,10 +221,10 @@ const QueryMonitor: React.FC = () => {
                 </Alert>
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
 
           {/* Active Connections */}
-          <Grid item xs={12} md={6}>
+          {/* <Grid item xs={12} md={6}>
             <Card>
               <CardHeader
                 title={<Typography variant='h6'>Active Connections</Typography>}
@@ -226,7 +243,7 @@ const QueryMonitor: React.FC = () => {
                 </Box>
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </Box>

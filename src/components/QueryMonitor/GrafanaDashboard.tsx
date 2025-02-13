@@ -46,12 +46,23 @@ const GrafanaDashboard: React.FC<GrafanaDashboardProps> = ({
             };
 
             baseUrl.searchParams.set('orgId', orgId);
-            baseUrl.searchParams.set('from', timeRange.from);
-            baseUrl.searchParams.set('to', timeRange.to);
-            baseUrl.searchParams.set('timezone', 'browser');
-            baseUrl.searchParams.set('theme', theme);
-            baseUrl.searchParams.set('panelId', panelId);
-            baseUrl.searchParams.set('auth_token', authToken);
+        baseUrl.searchParams.set('from', 'now-6h');
+        baseUrl.searchParams.set('to', 'now');
+        baseUrl.searchParams.set('timezone', 'browser');
+        baseUrl.searchParams.set('var-interval', '$__auto');
+        baseUrl.searchParams.set('var-DS_PROMETHEUS', 'aecry96qo5m9sf');
+        baseUrl.searchParams.set('var-namespace', '');
+        baseUrl.searchParams.set('var-release', '');
+        baseUrl.searchParams.set('var-instance', 'postgres_exporter:9187');
+        baseUrl.searchParams.set('var-datname', '$__all');
+        baseUrl.searchParams.set('var-mode', '$__all');
+        baseUrl.searchParams.set('refresh', '10s');
+        baseUrl.searchParams.set('panelId', panelId);
+        baseUrl.searchParams.set('__feature.dashboardSceneSolo', 'true');
+        baseUrl.searchParams.set('auth_token', authToken);
+
+        // For embedding, we should use the embed view
+        baseUrl.pathname = baseUrl.pathname.replace('/d/', '/d-solo/');
 
             return baseUrl.toString();
         } catch (err) {
@@ -96,7 +107,7 @@ const GrafanaDashboard: React.FC<GrafanaDashboardProps> = ({
           borderBottom: 1,
           borderColor: 'divider'
         }}>
-          <Typography variant="h6">Metrics Dashboard</Typography>
+          {/* <Typography variant="h6">Metrics Dashboard</Typography> */}
           <Box>
             <Tooltip title="Refresh">
               <IconButton onClick={handleRefresh} size="small">
