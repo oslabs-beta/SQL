@@ -147,7 +147,7 @@ const QueryMonitor: React.FC = () => {
         </Grid>
       </Grid>
           {/* Key Metrics */}
-          <Grid item xs={12} md={6}>
+          {/* <Grid item xs={12} md={6}>
             <Card>
               <CardHeader
                 title={<Typography variant='h6'>Key Metrics</Typography>}
@@ -181,10 +181,10 @@ const QueryMonitor: React.FC = () => {
                 />
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
 
           {/* Query Performance */}
-          <Grid item xs={12} md={6}>
+          {/* <Grid item xs={12} md={6}>
             <Card>
               <CardHeader
                 title={<Typography variant='h6'>Query Performance</Typography>}
@@ -203,10 +203,10 @@ const QueryMonitor: React.FC = () => {
                 </Box>
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
 
           {/* Alerts */}
-          <Grid item xs={12} md={6}>
+          {/* <Grid item xs={12} md={6}>
             <Card>
               <CardHeader
                 title={<Typography variant='h6'>Critical Alerts</Typography>}
@@ -221,10 +221,10 @@ const QueryMonitor: React.FC = () => {
                 </Alert>
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
 
           {/* Active Connections */}
-          <Grid item xs={12} md={6}>
+          {/* <Grid item xs={12} md={6}>
             <Card>
               <CardHeader
                 title={<Typography variant='h6'>Active Connections</Typography>}
@@ -243,7 +243,7 @@ const QueryMonitor: React.FC = () => {
                 </Box>
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </Box>
